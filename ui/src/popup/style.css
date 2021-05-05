@@ -1,0 +1,23 @@
+.mmmModal .modal-content{
+    width: auto !important;
+    padding: 0 50px;
+}
+.mmodal-body{
+    text-align: center;
+}
+
+.mmodal-body h2,
+.mmodal-body h5,
+.mmodal-body .check{
+    margin-bottom: 50px;
+}
+
+
+.mmodal-body .check{
+    color: rgb(66, 194, 49);
+}
+
+.mmodal-body svg{
+    font-size: 28px;
+    margin: 10px
+}

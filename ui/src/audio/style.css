@@ -1,0 +1,11 @@
+.react-mic-container{
+
+}
+
+.react-mic-container .react-mic{
+    background: #000;
+}
+
+.react-mic-container audio{
+    background: #f1f3f4;
+}

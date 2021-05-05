@@ -1,0 +1,13 @@
+
+  .vdplayer {
+    width: 70% !important;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+  }
+.boxWidth{
+    width: 62.5%;
+    margin-left: 18.8%;
+  }

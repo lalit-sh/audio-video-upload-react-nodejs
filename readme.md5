@@ -1,0 +1,54 @@
+# Simple AV Recorder
+
+Simple AV Recorder is a NodeJs/React Application that records Audio/Video using the laptop/phone microphone of the user and saves it to the server.
+
+#### TechStack
+ReactJs, NodeJs, MongoDb
+
+## Development
+
+Take the clone of the app and run
+
+### Step 1: Env Setup:
+
+Install and setup mongodb
+
+Install and setup NodeJs
+
+### Step 2: Start Front-End
+Front-End (ReactJs) app is maintained in a separate repository so you need to update git submodule to get the FrontEnd Code
+
+`git submodule update --init`
+
+then 
+
+`$ cd ui`
+
+`$ npm i`
+
+`$ npm run start`
+
+### Step 3: Setup env vars
+
+Just rename .env.sapmle to .env and update the db credentials
+
+### Step 4: Run Server
+In a separate terminal open the project and run
+
+`$ npm i`
+
+`$ npm run start`
+
+or
+
+`npm run debug` 
+
+## Deployment
+
+Goto root of the project and run
+
+`$ npm run build-ui`
+
+and then deploy to your desired server.
+
+Note: If you are deploying on a dedicated server like AWS ec2 machine then you have to build UI separately after taking a clone of the app over the server. Check out the development setup part for instructions. 
