@@ -4,16 +4,27 @@ var express = require( "express");
 var morgan = require( "morgan");
 var bodyParser = require( "body-parser");
 var expressValidator = require("express-validator");
-var db = require( "./src/db");
+// var db = require( "./src/db");
 // const auth = require("./src/middleware/auth").default;
 const port = process.env.PORT || 9004;
 const path = require("path");
-var forceSsl = require('express-force-ssl');
-const fs = require('fs');
+// var forceSsl = require('express-force-ssl');
+// const fs = require('fs');
 var minify = require('express-minify');
 var compression = require('compression');
-const https = require('https');
+// const https = require('https');
 var http = require('http');
+
+const flash = require('express-flash');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+// const MongoStore = new connectMongo(session);
+const { mongoose } = require('./src/db');
+let passport = require('passport');
+require('./src/middleware/passport')(passport);
+
+
 
 const env = process.env.NODE_ENV;
 
@@ -27,21 +38,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
 
+//user-session
+app.use(flash());
+app.use(cookieParser());
+app.use(session({
+    secret: 'secret',
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({
+        client: mongoose.connection.client
+    }),
+    cookie: { maxAge: 60 * 60 * 60 * 1000 }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.all(process.env.API_BASE + "*", (req, res, next) => {
-    req.user = {
-        "_id": "1",
-        "firstName": "Jhone",
-        "lastName": "Doe",
-        "email": "jhone.doe@example.com",
-        "username": "jhone.doe"
+    //to protect api base from unauthenticated calls
+    if(!req.user){
+        return res.status(400).json({
+            message: "Authentication error"
+        });
     }
     next();
 });
 
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'ui/build')));
 
+
+app.get("*", (req, res) => {
+    var appDir = path.dirname(require.main.filename);
+    return res.sendFile(path.join(appDir+'/ui/build/index.html'), {user: req.user && req.user.id});
+})
 require("./src/routes")(app);
 
 if(env && (env == "production" || env == "PRODUCTION")){
