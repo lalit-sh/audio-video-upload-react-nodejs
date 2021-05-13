@@ -13,15 +13,31 @@ let options = {
     dbName: dbName
 };
 
-mongoose.connect(`mongodb://${dbAddress}:${dbPort}`, options).catch(err => {
-    if (err.message.indexOf("ECONNREFUSED") !== -1) {
-        console.error("Error: The server was not able to reach MongoDB. Maybe it's not running?");
-        process.exit(1);
-    } else {
-        throw err;
+const db = async () => {
+    try{
+        let connection = await mongoose.connect(`mongodb://${dbAddress}:${dbPort}`, options);
+        return connection;
+    }catch(err){
+        if (err.message.indexOf("ECONNREFUSED") !== -1) {
+            console.error("Error: The server was not able to reach MongoDB. Maybe it's not running?");
+            process.exit(1);
+        } else {
+            throw err;
+        }
     }
-});
+}
 
-module.exports = {mongoose};
+module.exports = {mongoose: db};
+
+// mongoose.connect(`mongodb://${dbAddress}:${dbPort}`, options).catch(err => {
+//     if (err.message.indexOf("ECONNREFUSED") !== -1) {
+//         console.error("Error: The server was not able to reach MongoDB. Maybe it's not running?");
+//         process.exit(1);
+//     } else {
+//         throw err;
+//     }
+// });
+
+// module.exports = {mongoose};
 
 

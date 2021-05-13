@@ -11,7 +11,8 @@ const schema = new Schema({
         required: [true, "tripname required"]
     },
     createdBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     status: {
         type: String
