@@ -20,7 +20,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 // const MongoStore = new connectMongo(session);
-
+const publicApi = ["get_recordings"];
 (async function(){
     const { mongoose } = require('./src/db');
     const db = await mongoose();
@@ -58,7 +58,8 @@ const MongoStore = require('connect-mongo');
 
     app.all(process.env.API_BASE + "*", (req, res, next) => {
         //to protect api base from unauthenticated calls
-        if(!req.user){
+
+        if(!req.user && publicApi.some(el => !req.path.includes(el))){
             return res.status(400).json({
                 message: "Authentication error"
             });
@@ -78,26 +79,26 @@ const MongoStore = require('connect-mongo');
 
     if(env && (env == "production" || env == "PRODUCTION")){
         //in case you want to enable ssl uncomment the commented code
-        // app.set('forceSSLOptions', {
-        //     enable301Redirects: true,
-        //     trustXFPHeader: false,
-        //     httpsPort: 443,
-        //     sslRequiredMessage: 'SSL Required.'
-        // });
-        // app.use(forceSsl);
+        app.set('forceSSLOptions', {
+            enable301Redirects: true,
+            trustXFPHeader: false,
+            httpsPort: 443,
+            sslRequiredMessage: 'SSL Required.'
+        });
+        app.use(forceSsl);
         app.use(compression());
         app.use(minify());
 
-        // var https_options = {
-        //     key: fs.readFileSync(path.join(__dirname, 'ssl/private.key')),
-        //     cert: fs.readFileSync(path.join(__dirname, 'ssl/certificate.crt')),
-        //     ca: fs.readFileSync(path.join(__dirname, 'ssl/ca_bundle.crt')),
-        //     secure: true
-        // };
-        // https.createServer(https_options, app).listen(443, () => {
-        //     console.log(`working on port ${443}`);
-        // });
-        http.createServer(app).listen(port);
+        var https_options = {
+            key: fs.readFileSync(path.join(__dirname, 'ssl/private.key')),
+            cert: fs.readFileSync(path.join(__dirname, 'ssl/certificate.crt')),
+            ca: fs.readFileSync(path.join(__dirname, 'ssl/ca_bundle.crt')),
+            secure: true
+        };
+        https.createServer(https_options, app).listen(443, () => {
+            console.log(`working on port ${443}`);
+        });
+        http.createServer(app).listen(80);
     }else{
         app.listen(port,function(){
             console.log(`Working on port ${port}`);
