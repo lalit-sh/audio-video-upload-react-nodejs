@@ -62,7 +62,6 @@ module.exports.updateUser = function(User,callback){
 }
 
 module.exports.getUserByUsername = function(username, callback){
-    console.log('admin model',username)
    var query = {email: username};
  
    User.findOne(query, callback);
